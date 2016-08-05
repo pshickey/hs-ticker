@@ -11,9 +11,9 @@ main = withCurlDo $ do
     let matches = map concat (page =~ dataPattern :: [[String]])
         info    = extractData matches
             where
-                extractData = map (\x -> (extractLabel x, extractVal x))
-                extractLabel = getQuoteField
-                extractVal = reverse . getQuoteField . reverse
-                getQuoteField = (takeWhile (/='"') . tail . dropWhile (/='"'))
+                extractData   = map (\x -> (extractLabel x, extractVal x))
+                extractLabel  = getQuoteField
+                extractVal    = reverse . getQuoteField . reverse
+                getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
     -- info is pretty much an assoc list so I can write a function to lookup fields I actually care about
     mapM_ print info
