@@ -4,6 +4,7 @@ import System.IO
 import Network.Curl
 import Text.Regex.Posix
 import Control.Monad
+import Data.List
 
 main :: IO ()
 main = withCurlDo $ do
@@ -20,11 +21,15 @@ main = withCurlDo $ do
             where
                 findMatches :: [Char] -> [[Char]]
                 findMatches s = map concat (s =~ dataPattern :: [[String]])
-        info = map extractData matches
+        info    = map extractData matches
             where
                 extractData   = map (\x -> (extractLabel x, extractVal x))
                 extractLabel  = getQuoteField
                 extractVal    = reverse . getQuoteField . reverse
                 getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
+        info'   = map filterData info
+            where
+                fields  = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
+                filterData xs = map (\s -> lookup s xs) fields
     hClose handle
-    mapM_ print info
+    mapM_ print info'
