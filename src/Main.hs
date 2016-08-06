@@ -1,19 +1,30 @@
 module Main where
 
+import System.IO
 import Network.Curl
 import Text.Regex.Posix
+import Control.Monad
 
 main :: IO ()
 main = withCurlDo $ do
-    let url = "https://www.google.com/finance?q=INDEXNASDAQ%3A.IXIC"
+    handle <- openFile "stocks.txt" ReadMode
+    txt <- hGetContents handle
+    let stocks = lines txt
+        urlBase = "https://www.google.com/finance?q="
+        urls = map (urlBase++) stocks
         dataPattern = "<meta itemprop=\".*\"\n *content=\".*\" />"
-    (_, page) <- curlGetString url [CurlTimeout 10]
-    let matches = map concat (page =~ dataPattern :: [[String]])
-        info    = extractData matches
+    pages <- forM urls (\x -> do
+            (_, html) <- curlGetString x [CurlTimeout 30]
+            return html)
+    let matches = map findMatches pages
+            where
+                findMatches :: [Char] -> [[Char]]
+                findMatches s = map concat (s =~ dataPattern :: [[String]])
+        info = map extractData matches
             where
                 extractData   = map (\x -> (extractLabel x, extractVal x))
                 extractLabel  = getQuoteField
                 extractVal    = reverse . getQuoteField . reverse
                 getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
-    -- info is pretty much an assoc list so I can write a function to lookup fields I actually care about
+    hClose handle
     mapM_ print info
