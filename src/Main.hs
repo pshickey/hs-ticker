@@ -17,6 +17,8 @@ main = withCurlDo $ do
     pages <- forM urls (\x -> do
             (_, html) <- curlGetString x [CurlTimeout 30]
             return html)
+    hClose handle
+
     let matches = map findMatches pages
             where
                 findMatches :: [Char] -> [[Char]]
@@ -29,7 +31,7 @@ main = withCurlDo $ do
                 getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
         info'   = map filterData info
             where
-                fields  = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
-                filterData xs = map (\s -> lookup s xs) fields
-    hClose handle
+                fields = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
+                filterData xs = sequence $ map (\s -> lookup s xs) fields
+        -- TODO clean names
     mapM_ print info'
