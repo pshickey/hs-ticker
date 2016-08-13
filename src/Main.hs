@@ -5,6 +5,8 @@ import Network.Curl
 import Text.Regex.Posix
 import Control.Monad
 import Data.List
+import Data.Char
+import Data.Maybe
 
 main :: IO ()
 main = withCurlDo $ do
@@ -29,9 +31,9 @@ main = withCurlDo $ do
                 extractLabel  = getQuoteField
                 extractVal    = reverse . getQuoteField . reverse
                 getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
-        info'   = map filterData info
+        info'  = map filterData info
             where
                 fields = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
-                filterData xs = sequence $ map (\s -> lookup s xs) fields
-        -- TODO clean names
+                filterData xs = mapMaybe (\s -> lookup s xs) fields
+        -- TODO pretty printing
     mapM_ print info'
