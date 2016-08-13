@@ -25,15 +25,15 @@ main = withCurlDo $ do
             where
                 findMatches :: [Char] -> [[Char]]
                 findMatches s = map concat (s =~ dataPattern :: [[String]])
-        info    = map extractData matches
+        allData = map extractData matches
             where
                 extractData   = map (\x -> (extractLabel x, extractVal x))
                 extractLabel  = getQuoteField
                 extractVal    = reverse . getQuoteField . reverse
                 getQuoteField = takeWhile (/='"') . tail . dropWhile (/='"')
-        info'  = map filterData info
+        relevant = map filterData allData
             where
                 fields = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
                 filterData xs = mapMaybe (\s -> lookup s xs) fields
         -- TODO pretty printing
-    mapM_ print info'
+    mapM_ print relevant
