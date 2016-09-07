@@ -1,5 +1,6 @@
 module Main where
 
+import System.Environment
 import System.IO
 import Network.Curl
 import Text.Regex.Posix
@@ -10,7 +11,10 @@ import Data.Maybe
 
 main :: IO ()
 main = withCurlDo $ do
-    handle <- openFile "stocks.txt" ReadMode
+    -- The name of the file containing stock symbols should be the only arg
+    -- TODO: case for safely handling command line
+    [stock_file] <- getArgs
+    handle <- openFile stock_file ReadMode
     txt <- hGetContents handle
     let stocks      = lines txt
         urlBase     = "https://www.google.com/finance?q="
