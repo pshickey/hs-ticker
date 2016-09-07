@@ -12,9 +12,9 @@ main :: IO ()
 main = withCurlDo $ do
     handle <- openFile "stocks.txt" ReadMode
     txt <- hGetContents handle
-    let stocks = lines txt
-        urlBase = "https://www.google.com/finance?q="
-        urls = map (urlBase++) stocks
+    let stocks      = lines txt
+        urlBase     = "https://www.google.com/finance?q="
+        urls        = map (urlBase++) stocks
         dataPattern = "<meta itemprop=\".*\"\n *content=\".*\" />"
     pages <- forM urls (\x -> do
             (_, html) <- curlGetString x [CurlTimeout 30]
@@ -35,5 +35,10 @@ main = withCurlDo $ do
             where
                 fields = ["name", "tickerSymbol", "price", "priceChange", "priceChangePercent"]
                 filterData xs = mapMaybe (\s -> lookup s xs) fields
-        -- TODO pretty printing
-    mapM_ print relevant
+    mapM_ prettyPrint relevant
+        where
+            prettyPrint [name, sym, price, change, percent] = 
+                putStrLn $ 
+                    name ++ " --- ("++ sym ++ ")\n\t" ++
+                        show (price, change, percent)
+            prettyPrint _  = putStrLn "error"
