@@ -1,5 +1,8 @@
 module Main where
 
+{-# LANGUAGE DeriveGeneric #-}
+
+import GHC.Generics
 import System.Environment
 import System.IO
 import Network.Curl
@@ -8,6 +11,29 @@ import Control.Monad
 import Data.List
 import Data.Char
 import Data.Maybe
+import Data.Aeson
+
+Data Finance = Finance {
+    id :: Text,
+    t :: Text,
+    e :: Text,
+    l :: Text,
+    l_fix :: Double,
+    l_cur :: Text,
+    s :: Text,
+    ltt :: Text,
+    lt :: Text,
+    lt_dts :: Text,
+    c :: Double,
+    c_fix :: Double,
+    cp :: Double,
+    cp_fix :: Double,
+    ccol :: Text,
+    pcls_fix :: Double
+} deriving (Generic, Show)
+
+instance FromJSON Finance
+instance ToJSON Finance
 
 main :: IO ()
 main = withCurlDo $ do
@@ -41,8 +67,8 @@ main = withCurlDo $ do
                 filterData xs = mapMaybe (\s -> lookup s xs) fields
     mapM_ prettyPrint relevant
         where
-            prettyPrint [name, sym, price, change, percent] = 
-                putStrLn $ 
+            prettyPrint [name, sym, price, change, percent] =
+                putStrLn $
                     name ++ " --- ("++ sym ++ ")\n\t" ++
                         show (price, change, percent)
             prettyPrint _  = putStrLn "error"
