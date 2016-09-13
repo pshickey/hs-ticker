@@ -1,6 +1,6 @@
-module Main where
-
 {-# LANGUAGE DeriveGeneric #-}
+
+module Main where
 
 import GHC.Generics
 import System.Environment
@@ -15,27 +15,32 @@ import Data.Text
 
 data Finance =
     Finance {
-      id :: Int,
-      t :: Text,
-      e :: Text,
-      l :: Text,
-      l_fix :: Double,
-      l_cur :: Text,
-      s :: Text,
-      ltt :: Text,
-      lt :: Text,
-      lt_dts :: Text,
-      c :: Double,
-      c_fix :: Double,
-      cp :: Double,
-      cp_fix :: Double,
-      ccol :: Text,
-      pcls_fix :: Double
-} deriving (Generic, Show)
+        id :: Int,
+        t :: Text,
+        e :: Text,
+        l :: Text,
+        l_fix :: Double,
+        l_cur :: Text,
+        s :: Text,
+        ltt :: Text,
+        lt :: Text,
+        lt_dts :: Text,
+        c :: Double,
+        c_fix :: Double,
+        cp :: Double,
+        cp_fix :: Double,
+        ccol :: Text,
+        pcls_fix :: Double
+    } deriving (Generic, Show)
 
 instance FromJSON Finance
 instance ToJSON Finance
 
+main :: IO()
+main = do
+    putStrLn "from the ground up"
+
+{-
 main :: IO ()
 main = withCurlDo $ do
     -- The name of the file containing stock symbols should be the only arg
@@ -73,3 +78,4 @@ main = withCurlDo $ do
                     name ++ " --- ("++ sym ++ ")\n\t" ++
                         show (price, change, percent)
             prettyPrint _  = putStrLn "error"
+-}
