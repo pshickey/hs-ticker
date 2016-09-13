@@ -8,28 +8,29 @@ import System.IO
 import Network.Curl
 import Text.Regex.Posix
 import Control.Monad
-import Data.List
 import Data.Char
 import Data.Maybe
 import Data.Aeson
+import Data.Text
 
-Data Finance = Finance {
-    id :: Text,
-    t :: Text,
-    e :: Text,
-    l :: Text,
-    l_fix :: Double,
-    l_cur :: Text,
-    s :: Text,
-    ltt :: Text,
-    lt :: Text,
-    lt_dts :: Text,
-    c :: Double,
-    c_fix :: Double,
-    cp :: Double,
-    cp_fix :: Double,
-    ccol :: Text,
-    pcls_fix :: Double
+data Finance =
+    Finance {
+      id :: Int,
+      t :: Text,
+      e :: Text,
+      l :: Text,
+      l_fix :: Double,
+      l_cur :: Text,
+      s :: Text,
+      ltt :: Text,
+      lt :: Text,
+      lt_dts :: Text,
+      c :: Double,
+      c_fix :: Double,
+      cp :: Double,
+      cp_fix :: Double,
+      ccol :: Text,
+      pcls_fix :: Double
 } deriving (Generic, Show)
 
 instance FromJSON Finance

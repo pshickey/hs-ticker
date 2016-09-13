@@ -19,4 +19,5 @@ executable hs-ticker
   build-depends:       base >= 4.7 && < 5
                      , curl
                      , regex-posix
-					 , aeson
+                     , aeson
+                     , text
