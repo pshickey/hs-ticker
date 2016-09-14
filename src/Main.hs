@@ -6,6 +6,7 @@ import GHC.Generics
 import System.Environment
 import System.IO
 import Data.Aeson
+import Data.Char
 import qualified Data.Text as T
 import qualified Data.ByteString.Lazy as B
 import Network.HTTP.Conduit (simpleHttp)
@@ -41,7 +42,7 @@ main = do
     let queryBase = "https://www.google.com/finance/info?q="
         query = queryBase ++ txt
     json_str <- simpleHttp query
-    let clean_json = B.drop 4 json_str
+    let clean_json = B.dropWhile (/= (fromIntegral $ ord '[')) json_str
         objs = eitherDecode clean_json :: Either String [Finance]
     case objs of
         Left s -> putStrLn s
