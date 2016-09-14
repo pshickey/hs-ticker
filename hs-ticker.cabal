@@ -17,7 +17,7 @@ executable hs-ticker
   main-is:             Main.hs
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5
-                     , curl
-                     , regex-posix
                      , aeson
                      , text
+                     , http-conduit
+                     , bytestring

@@ -1,36 +1,33 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
 
 module Main where
 
 import GHC.Generics
 import System.Environment
 import System.IO
-import Network.Curl
-import Text.Regex.Posix
-import Control.Monad
-import Data.Char
-import Data.Maybe
 import Data.Aeson
-import Data.Text
+import qualified Data.Text as T
+import qualified Data.ByteString.Lazy as B
+import Network.HTTP.Conduit (simpleHttp)
 
 data Finance =
     Finance {
-        id :: Int,
-        t :: Text,
-        e :: Text,
-        l :: Text,
-        l_fix :: Double,
-        l_cur :: Text,
-        s :: Text,
-        ltt :: Text,
-        lt :: Text,
-        lt_dts :: Text,
-        c :: Double,
-        c_fix :: Double,
-        cp :: Double,
-        cp_fix :: Double,
-        ccol :: Text,
-        pcls_fix :: Double
+        id :: T.Text,
+        t :: T.Text,
+        e :: T.Text,
+        l :: T.Text,
+        l_fix :: T.Text,
+        l_cur :: T.Text,
+        s :: T.Text,
+        ltt :: T.Text,
+        lt :: T.Text,
+        lt_dts :: T.Text,
+        c :: T.Text,
+        c_fix :: T.Text,
+        cp :: T.Text,
+        cp_fix :: T.Text,
+        ccol :: T.Text,
+        pcls_fix :: T.Text
     } deriving (Generic, Show)
 
 instance FromJSON Finance
@@ -38,9 +35,28 @@ instance ToJSON Finance
 
 main :: IO()
 main = do
-    putStrLn "from the ground up"
+    [stock_file] <- getArgs
+    handle <- openFile stock_file ReadMode
+    txt <- hGetContents handle
+    let queryBase = "https://www.google.com/finance/info?q="
+        query = queryBase ++ txt
+    json_str <- simpleHttp query
+    let clean_json = B.drop 4 json_str
+        objs = eitherDecode clean_json :: Either String [Finance]
+    case objs of
+        Left s -> putStrLn s
+        Right f -> print f
 
 {-
+import System.Environment
+import System.IO
+import Network.Curl
+import Text.Regex.Posix
+import Control.Monad
+import Data.List
+import Data.Char
+import Data.Maybe
+
 main :: IO ()
 main = withCurlDo $ do
     -- The name of the file containing stock symbols should be the only arg
