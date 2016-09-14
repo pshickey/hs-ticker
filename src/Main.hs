@@ -6,29 +6,29 @@ import GHC.Generics
 import System.Environment
 import System.IO
 import Data.Aeson
-import qualified Data.Text as T
+import Data.Text
 import qualified Data.ByteString.Lazy as B
 import qualified Data.ByteString.Lazy.Char8 as C8
 import Network.HTTP.Conduit (simpleHttp)
 
 data Finance =
     Finance {
-        id :: T.Text,
-        t :: T.Text,
-        e :: T.Text,
-        l :: T.Text,
-        l_fix :: T.Text,
-        l_cur :: T.Text,
-        s :: T.Text,
-        ltt :: T.Text,
-        lt :: T.Text,
-        lt_dts :: T.Text,
-        c :: T.Text,
-        c_fix :: T.Text,
-        cp :: T.Text,
-        cp_fix :: T.Text,
-        ccol :: T.Text,
-        pcls_fix :: T.Text
+        id :: Text,
+        t :: Text,
+        e :: Text,
+        l :: Text,
+        l_fix :: Text,
+        l_cur :: Text,
+        s :: Text,
+        ltt :: Text,
+        lt :: Text,
+        lt_dts :: Text,
+        c :: Text,
+        c_fix :: Text,
+        cp :: Text,
+        cp_fix :: Text,
+        ccol :: Text,
+        pcls_fix :: Text
     } deriving (Generic, Show)
 
 instance FromJSON Finance
