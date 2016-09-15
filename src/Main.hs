@@ -3,6 +3,7 @@
 module Main where
 
 import GHC.Generics
+import Control.Monad
 import System.Environment
 import System.IO
 import Data.Aeson
@@ -46,4 +47,4 @@ main = do
         objs = eitherDecode clean_json :: Either String [Finance]
     case objs of
         Left s -> putStrLn s
-        Right f -> print f
+        Right f -> mapM_ print f
