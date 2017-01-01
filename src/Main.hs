@@ -37,8 +37,8 @@ instance ToJSON Finance
 
 main :: IO()
 main = do
-    [stock_file] <- getArgs
-    handle <- openFile stock_file ReadMode
+    [stocks] <- getArgs
+    handle <- openFile stocks ReadMode
     txt <- hGetContents handle
     let queryBase = "https://www.google.com/finance/info?q="
         query = queryBase ++ txt
@@ -47,4 +47,7 @@ main = do
         objs = eitherDecode clean_json :: Either String [Finance]
     case objs of
         Left s -> putStrLn s
-        Right f -> mapM_ print f
+        Right f -> mapM_ (putStrLn . fmtFinance) f
+
+fmtFinance (Finance _ t e _ _ l_cur _ _ lt _ c _ cp _ _ _) =
+    unpack $ Data.Text.unwords [t, e, l_cur, lt, c, cp]
