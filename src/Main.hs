@@ -53,4 +53,6 @@ gFinancePrint f = do
         Right f -> mapM_ (putStrLn . fmtFinance) f
 
 fmtFinance (Finance _ t e _ _ l_cur _ _ lt _ c _ cp _ _ _) =
-    unpack $ Data.Text.unwords [t, e, l_cur, lt, c, cp]
+    unpack $
+    Data.Text.unwords
+        [t, e, "\n\tPrice:", l_cur, lt, "/", c, (Data.Text.append cp "%")]
