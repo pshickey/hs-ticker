@@ -37,8 +37,11 @@ instance ToJSON Finance
 
 main :: IO()
 main = do
-    [stocks] <- getArgs
-    handle <- openFile stocks ReadMode
+    stocks <- getArgs
+    mapM_ gFinancePrint stocks
+
+gFinancePrint f = do
+    handle <- openFile f ReadMode
     txt <- hGetContents handle
     let queryBase = "https://www.google.com/finance/info?q="
         query = queryBase ++ txt
