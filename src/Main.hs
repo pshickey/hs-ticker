@@ -4,6 +4,7 @@ module Main where
 
 import GHC.Generics
 import Control.Monad
+import Control.Concurrent
 import System.Environment
 import System.IO
 import Data.Aeson
@@ -38,7 +39,11 @@ instance ToJSON Finance
 main :: IO()
 main = do
   stocks <- getArgs
+-- TODO Pattern match stocks and read from stdin if no file given
   mapM_ gFinancePrint stocks
+  threadDelay 30
+  putStrLn ""
+  main
 
 gFinancePrint f = do
   handle <- openFile f ReadMode
